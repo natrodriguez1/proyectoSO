@@ -56,12 +56,12 @@ public class UI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String input = inputPedidos.getText();
-                int numPedidos = Integer.parseInt(input);
 
-                if(numPedidos<=0){
+                if(input.equals("") || Integer.parseInt(input) <= 0){
                     JOptionPane.showMessageDialog(null, "solicitar por lo menos 1 pedido");
                     inputPedidos.setText("");
                 }else{
+                    int numPedidos = Integer.parseInt(input);
                     for(int i = 0; i < numPedidos; i++){
                         Pedido p = new Pedido();
                     }

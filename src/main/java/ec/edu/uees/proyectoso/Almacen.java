@@ -31,5 +31,7 @@ public class Almacen extends JPanel{
         }
 
 
+        //depot
+        g.drawRect(60, 450, 80, squareSize);
     }
 }
