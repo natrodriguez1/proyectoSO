@@ -16,6 +16,5 @@ public class ProyectoSO {
         Almacen almacen = new Almacen();
 
         JFrame ventana = new UI(almacen);
-
     }
 }
