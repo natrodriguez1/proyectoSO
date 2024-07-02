@@ -2,11 +2,9 @@ package ec.edu.uees.proyectoso;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.BorderUIResource;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 
 public class UI extends JFrame {
 
@@ -14,19 +12,17 @@ public class UI extends JFrame {
         almacen.setPreferredSize(new Dimension(1000, 500));
 
         setTitle("proyecto :)");
-        setSize(1000, 550);
+        setSize(1100, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel cPanel = new JPanel();
         cPanel.setLayout(new BorderLayout());
         setContentPane(cPanel);
+        setResizable(false);
 
+        //norte
         JPanel northPanel = new JPanel();
         northPanel.setBorder(new EmptyBorder(20,20,20,20));
-        //northPanel.setLayout(new BorderLayout());
-//        JLabel titulo = new JLabel("sistema de almacén");
-//        titulo.setHorizontalAlignment(SwingConstants.CENTER);
-//        northPanel.add(titulo, BorderLayout.NORTH);
         JLabel label = new JLabel("número de pedidos:");
         label.setHorizontalAlignment(SwingConstants.LEFT);
         JTextField inputPedidos = new JTextField(2);
@@ -53,27 +49,56 @@ public class UI extends JFrame {
             }
 
         });
-        JButton aceptar = new JButton("generar");
-        aceptar.addActionListener(new ActionListener() {
+        JButton ejecutar = new JButton("ejecutar");
+        JButton parar = new JButton("parar");
+        JButton finalizar = new JButton("finalizar");
+        ejecutar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String input = inputPedidos.getText();
                 int numPedidos = Integer.parseInt(input);
 
-                if(numPedidos>10){
-                    JOptionPane.showMessageDialog(null, "solicitar max. 10 pedidos");
+                if(numPedidos>10 || numPedidos<5){
+                    JOptionPane.showMessageDialog(null, "solicitar entre 5 a 10 pedidos");
                     inputPedidos.setText("");
+                }else{
+                    for(int i = 0; i < numPedidos; i++){
+                        Pedido p = new Pedido();
+                    }
                 }
             }
         });
         northPanel.add(label, BorderLayout.WEST);
         northPanel.add(inputPedidos, BorderLayout.CENTER);
-        northPanel.add(aceptar);
+        northPanel.add(ejecutar);
+        northPanel.add(parar);
+        northPanel.add(finalizar);
         add(northPanel, BorderLayout.NORTH);
 
-        add(almacen, BorderLayout.CENTER);
+        //centro
+        JPanel centerPanel = new JPanel();
+        almacen.setBorder(new BorderUIResource.LineBorderUIResource(Color.BLACK));
+        centerPanel.add(almacen);
+        centerPanel.setBorder(new EmptyBorder(0,50,0,50));
+        add(centerPanel, BorderLayout.CENTER);
 
-        setVisible(true);
+        //sur
+        JPanel southPanel = new JPanel();
+        southPanel.setBorder(new EmptyBorder(20,20,20,20));
+
+        JLabel pedidoLbl = new JLabel("pedido:");
+        JLabel pedido = new JLabel("__________");
+
+        JLabel distanciaLbl = new JLabel("distancia total: ");
+        JLabel distancia = new JLabel("__________");
+
+        southPanel.add(pedidoLbl);
+        southPanel.add(pedido);
+        southPanel.add(distanciaLbl);
+        southPanel.add(distancia);
+        add(southPanel, BorderLayout.SOUTH);
+
+
         setLocationRelativeTo(null);
     }
 }

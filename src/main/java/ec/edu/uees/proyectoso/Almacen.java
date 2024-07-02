@@ -10,8 +10,6 @@ public class Almacen extends JPanel{
         int squareSize = 50; // Tamaño de cada cuadrado en píxeles
 
         int[] casilleros = {0,3,4,7,8,11,12,15,16,19};
-        int[] pasillosVerticales = {2,6,10,14,18};
-        int[] pasillosHorizontales = {1,9};
 
 
 
@@ -32,13 +30,6 @@ public class Almacen extends JPanel{
             g.drawRect(casillero*squareSize, 7*squareSize, squareSize, squareSize);
         }
 
-        for(int pasillo : pasillosVerticales){
-            g.drawLine(pasillo*squareSize, 0, pasillo*squareSize, 500);
-        }
-
-        for(int pasillo : pasillosHorizontales){
-            g.drawLine( 0,pasillo*squareSize, 1000, pasillo*squareSize);
-        }
 
     }
 }
