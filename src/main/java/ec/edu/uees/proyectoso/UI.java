@@ -58,8 +58,8 @@ public class UI extends JFrame {
                 String input = inputPedidos.getText();
                 int numPedidos = Integer.parseInt(input);
 
-                if(numPedidos>10 || numPedidos<5){
-                    JOptionPane.showMessageDialog(null, "solicitar entre 5 a 10 pedidos");
+                if(numPedidos<=0){
+                    JOptionPane.showMessageDialog(null, "solicitar por lo menos 1 pedido");
                     inputPedidos.setText("");
                 }else{
                     for(int i = 0; i < numPedidos; i++){
@@ -92,10 +92,15 @@ public class UI extends JFrame {
         JLabel distanciaLbl = new JLabel("distancia total: ");
         JLabel distancia = new JLabel("__________");
 
+        JLabel tiempoLbl = new JLabel("tiempo:");
+        JLabel tiempo = new JLabel("__________");
+
         southPanel.add(pedidoLbl);
         southPanel.add(pedido);
         southPanel.add(distanciaLbl);
         southPanel.add(distancia);
+        southPanel.add(tiempoLbl);
+        southPanel.add(tiempo);
         add(southPanel, BorderLayout.SOUTH);
 
 

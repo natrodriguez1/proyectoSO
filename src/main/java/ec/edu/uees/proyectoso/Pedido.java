@@ -9,12 +9,12 @@ public class Pedido {
     Random rnd = new Random();
     String[] items;
     public Pedido(){
-        numItems = rnd.nextInt(0,9);
+        numItems = rnd.nextInt(5,10);
         items = new String[numItems];
         int nombreItem;
-        for(int i = 0; i<numItems; i++){
+        for(int i = 1; i<=numItems; i++){
              nombreItem = rnd.nextInt(1,numTotalItems);
-            items[i] = "item "+nombreItem;
+            items[i-1] = "item "+nombreItem;
         }
         System.out.println(Arrays.toString(items));
     }
