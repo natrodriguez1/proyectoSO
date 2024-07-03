@@ -5,10 +5,14 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.BorderUIResource;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Arrays;
 
 public class UI extends JFrame {
+    
+    private Pedido[] listaPedidos = new Pedido[100];
+    Almacen almacen = new Almacen();
 
-    UI(JPanel almacen){
+    UI(){
         almacen.setPreferredSize(new Dimension(1000, 500));
 
         setTitle("proyecto :)");
@@ -25,7 +29,7 @@ public class UI extends JFrame {
         northPanel.setBorder(new EmptyBorder(20,20,20,20));
         JLabel label = new JLabel("número de pedidos:");
         label.setHorizontalAlignment(SwingConstants.LEFT);
-        JTextField inputPedidos = new JTextField(2);
+        JTextField inputPedidos = new JTextField(10);
         inputPedidos.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -52,22 +56,24 @@ public class UI extends JFrame {
         JButton ejecutar = new JButton("ejecutar");
         JButton parar = new JButton("parar");
         JButton finalizar = new JButton("finalizar");
+        
         ejecutar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String input = inputPedidos.getText();
 
-                if(input.equals("") || Integer.parseInt(input) <= 0){
+                if(input.equals("") || Integer.parseInt(input)<= 0){
                     JOptionPane.showMessageDialog(null, "solicitar por lo menos 1 pedido");
                     inputPedidos.setText("");
                 }else{
-                    int numPedidos = Integer.parseInt(input);
-                    for(int i = 0; i < numPedidos; i++){
+                    for(int i = 0; i < Integer.parseInt(input); i++){
                         Pedido p = new Pedido();
+                        listaPedidos[i] = p;
                     }
                 }
             }
         });
+        
         northPanel.add(label, BorderLayout.WEST);
         northPanel.add(inputPedidos, BorderLayout.CENTER);
         northPanel.add(ejecutar);
@@ -92,18 +98,21 @@ public class UI extends JFrame {
         JLabel distanciaLbl = new JLabel("distancia total: ");
         JLabel distancia = new JLabel("__________");
 
-        JLabel tiempoLbl = new JLabel("tiempo:");
-        JLabel tiempo = new JLabel("__________");
-
         southPanel.add(pedidoLbl);
         southPanel.add(pedido);
         southPanel.add(distanciaLbl);
         southPanel.add(distancia);
-        southPanel.add(tiempoLbl);
-        southPanel.add(tiempo);
         add(southPanel, BorderLayout.SOUTH);
 
 
         setLocationRelativeTo(null);
+        
+        //System.out.println(almacen.getListaCasilleros()[0].getNroPasillo());
     }
+
+    public Pedido[] getListaPedidos() {
+        return listaPedidos;
+    }
+    
+    
 }
