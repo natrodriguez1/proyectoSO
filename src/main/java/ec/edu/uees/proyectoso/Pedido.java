@@ -18,11 +18,11 @@ public class Pedido extends Thread {
         
     }
     
-    /*public void run(){
+    public void run(){
         System.out.println("Pedido: " + numPedido);
         generarPedido();
         
-    }*/
+    }
     
     public void generarPedido(){
         numItems = rnd.nextInt(5,10);

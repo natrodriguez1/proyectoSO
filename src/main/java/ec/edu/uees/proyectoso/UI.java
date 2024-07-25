@@ -94,12 +94,18 @@ public class UI extends JFrame {
                             listaPedidos = new Pedido[numPedidos];
                             for(int i = 0; i < numPedidos; i++){
                                 pedido = new Pedido(i+1);
-                                System.out.println("Pedido: " + pedido.getNumPedido());
-                                pedido.generarPedido();
-                                //pedido.start();
+                                pedido.start();
                                 listaPedidos[i] = pedido;
-                                pintarCasilleros(pedido, almacen);
+                                
+                                try {
+                                    pedido.join();
+                                } catch (InterruptedException ex) {
+                                    Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                
                                 lblPedido.setText(" Pedido "+pedido.getNumPedido());
+                                pintarCasilleros(pedido, almacen);
+                                
                                 try {
                                     Thread.sleep(2000);
                                 } catch (InterruptedException ex) {
@@ -107,9 +113,13 @@ public class UI extends JFrame {
                                 }
                                 
                                 almacen.borrarCirculos();
-                                
                                 lblPedido.setText("__________");
-
+                                
+                                try {
+                                    Thread.sleep(2000);
+                                } catch (InterruptedException ex) {
+                                    Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                                }
 
                             }
                         }
@@ -150,36 +160,18 @@ public class UI extends JFrame {
     
     
     private void pintarCasilleros(Pedido pedido, Almacen almacen) {
-        
-        Thread hilo = new Thread(new Runnable(){
-            public void run(){
-                for (int i = 0; i < pedido.getItems().length; i++) { 
-                    for (int j = 0; j < almacen.getListaPasillos().length; j++) {
-                        if (almacen.getListaPasillos()[j].getNroItemFinal() >= pedido.getItems()[i].getNombreItem()&& pedido.getItems()[i].getNombreItem() >= almacen.getListaPasillos()[j].getNroItemIncio()) { 
-                            for (int k = 0; k < almacen.getListaPasillos()[j].getCasilleros().length; k++) { 
-                                if (pedido.getItems()[i].getNombreItem() == almacen.getListaPasillos()[j].getCasilleros()[k].getNroItem()) { 
-                                    almacen.agregarCirculo(almacen.getListaPasillos()[j].getCasilleros()[k]);
-                                    
-                                }
-                            }
+        for (int i = 0; i < pedido.getItems().length; i++) { 
+            for (int j = 0; j < almacen.getListaPasillos().length; j++) {
+                if (almacen.getListaPasillos()[j].getNroItemFinal() >= pedido.getItems()[i].getNombreItem()&& pedido.getItems()[i].getNombreItem() >= almacen.getListaPasillos()[j].getNroItemIncio()) { 
+                    for (int k = 0; k < almacen.getListaPasillos()[j].getCasilleros().length; k++) { 
+                        if (pedido.getItems()[i].getNombreItem() == almacen.getListaPasillos()[j].getCasilleros()[k].getNroItem()) { 
+                            almacen.agregarCirculo(almacen.getListaPasillos()[j].getCasilleros()[k]);
+
                         }
                     }
                 }
-                /*
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                almacen.borrarCirculos();*/
-                
-                
-                
             }
-        });    
-        
-        hilo.start();
+        }
         
     }
     
