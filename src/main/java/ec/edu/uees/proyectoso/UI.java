@@ -5,12 +5,14 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.BorderUIResource;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class UI extends JFrame {
     
-    private Pedido[] listaPedidos = new Pedido[100];
-    Almacen almacen = new Almacen();
+    private Pedido[] listaPedidos;
+    private Almacen almacen = new Almacen();
+    private Pedido pedido;
 
     UI(){
         almacen.setPreferredSize(new Dimension(1000, 500));
@@ -53,6 +55,23 @@ public class UI extends JFrame {
             }
 
         });
+        
+        //sur
+        JPanel southPanel = new JPanel();
+        southPanel.setBorder(new EmptyBorder(20,20,20,20));
+
+        JLabel pedidoLbl = new JLabel("pedido:");
+        JLabel lblPedido = new JLabel("__________");
+
+        JLabel distanciaLbl = new JLabel("distancia total: ");
+        JLabel distancia = new JLabel("__________");
+
+        southPanel.add(pedidoLbl);
+        southPanel.add(lblPedido);
+        southPanel.add(distanciaLbl);
+        southPanel.add(distancia);
+        add(southPanel, BorderLayout.SOUTH);
+        
         JButton ejecutar = new JButton("ejecutar");
         JButton parar = new JButton("parar");
         JButton finalizar = new JButton("finalizar");
@@ -61,16 +80,48 @@ public class UI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String input = inputPedidos.getText();
+                //int numPedidos = Integer.parseInt(input);
+                //listaPedidos = new Pedido[Integer.parseInt(input)];
 
-                if(input.equals("") || Integer.parseInt(input)<= 0){
+                
+                if(input.equals("") || Integer.parseInt(input) <= 0){
                     JOptionPane.showMessageDialog(null, "solicitar por lo menos 1 pedido");
                     inputPedidos.setText("");
                 }else{
-                    for(int i = 0; i < Integer.parseInt(input); i++){
-                        Pedido p = new Pedido();
-                        listaPedidos[i] = p;
-                    }
+                    Thread hilo = new Thread(new Runnable(){
+                        public void run(){
+                            int numPedidos = Integer.parseInt(input);
+                            listaPedidos = new Pedido[numPedidos];
+                            for(int i = 0; i < numPedidos; i++){
+                                pedido = new Pedido(i+1);
+                                System.out.println("Pedido: " + pedido.getNumPedido());
+                                pedido.generarPedido();
+                                //pedido.start();
+                                listaPedidos[i] = pedido;
+                                pintarCasilleros(pedido, almacen);
+                                lblPedido.setText(" Pedido "+pedido.getNumPedido());
+                                try {
+                                    Thread.sleep(2000);
+                                } catch (InterruptedException ex) {
+                                    Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                
+                                almacen.borrarCirculos();
+                                
+                                lblPedido.setText("__________");
+
+
+                            }
+                        }
+                    });
+                    
+                    hilo.start();
+                    
+                    
                 }
+                
+                
+                
             }
         });
         
@@ -88,31 +139,50 @@ public class UI extends JFrame {
         centerPanel.setBorder(new EmptyBorder(0,50,0,50));
         add(centerPanel, BorderLayout.CENTER);
 
-        //sur
-        JPanel southPanel = new JPanel();
-        southPanel.setBorder(new EmptyBorder(20,20,20,20));
-
-        JLabel pedidoLbl = new JLabel("pedido:");
-        JLabel pedido = new JLabel("__________");
-
-        JLabel distanciaLbl = new JLabel("distancia total: ");
-        JLabel distancia = new JLabel("__________");
-
-        southPanel.add(pedidoLbl);
-        southPanel.add(pedido);
-        southPanel.add(distanciaLbl);
-        southPanel.add(distancia);
-        add(southPanel, BorderLayout.SOUTH);
+        
 
 
         setLocationRelativeTo(null);
         
-        //System.out.println(almacen.getListaCasilleros()[0].getNroPasillo());
     }
 
-    public Pedido[] getListaPedidos() {
-        return listaPedidos;
+    
+    
+    
+    private void pintarCasilleros(Pedido pedido, Almacen almacen) {
+        
+        Thread hilo = new Thread(new Runnable(){
+            public void run(){
+                for (int i = 0; i < pedido.getItems().length; i++) { 
+                    for (int j = 0; j < almacen.getListaPasillos().length; j++) {
+                        if (almacen.getListaPasillos()[j].getNroItemFinal() >= pedido.getItems()[i].getNombreItem()&& pedido.getItems()[i].getNombreItem() >= almacen.getListaPasillos()[j].getNroItemIncio()) { 
+                            for (int k = 0; k < almacen.getListaPasillos()[j].getCasilleros().length; k++) { 
+                                if (pedido.getItems()[i].getNombreItem() == almacen.getListaPasillos()[j].getCasilleros()[k].getNroItem()) { 
+                                    almacen.agregarCirculo(almacen.getListaPasillos()[j].getCasilleros()[k]);
+                                    
+                                }
+                            }
+                        }
+                    }
+                }
+                /*
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                almacen.borrarCirculos();*/
+                
+                
+                
+            }
+        });    
+        
+        hilo.start();
+        
     }
+    
     
     
 }

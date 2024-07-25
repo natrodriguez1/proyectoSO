@@ -13,9 +13,11 @@ public class Pasillo {
     private int posicionInicialEnY = 9;
     private int posicionFinalEnY = 1;
     private int nroPasillo;
-    private Casillero[] casilleros = new Casillero[6];
+    private int nroItemIncio;
+    private int nroItemFinal;
+    private Casillero[] casilleros = new Casillero[12];
     
-    public Pasillo(int posicionEnX, int nroPasillo,Casillero[] casilleros){
+    public Pasillo(int posicionEnX, int nroPasillo, Casillero[] casilleros){
         this.posicionEnX = posicionEnX;
         this.nroPasillo = nroPasillo;
         this.casilleros = casilleros;
@@ -62,8 +64,22 @@ public class Pasillo {
     public void setCasilleros(Casillero[] casilleros) {
         this.casilleros = casilleros;
     }
+
+    public int getNroItemIncio() {
+        return nroItemIncio;
+    }
     
+    public void setNroItemIncio(int nroItemInicio) {
+        this.nroItemIncio = nroItemInicio;
+    }
     
+    public int getNroItemFinal() {
+        return nroItemFinal;
+    }
+    
+    public void setNroItemFinal(int nroItemFinal) {
+        this.nroItemFinal = nroItemFinal;
+    }
     
             
     

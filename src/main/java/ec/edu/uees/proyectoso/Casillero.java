@@ -11,15 +11,17 @@ package ec.edu.uees.proyectoso;
 public class Casillero {
     private int x;
     private int y;
+    private int tamañoCasillero = 50;
     private int nroItem;
     private int nroPosEnXPasillo;
     private boolean itemSolicitado = false;
-    private boolean isRight = true;
+    private Item item;
     
     public Casillero(int x, int y, int nroItem){
         this.x = x;
         this.y = y;
         this.nroItem = nroItem;
+        item = new Item(nroItem);
     }
 
     public int getX() {
@@ -47,7 +49,6 @@ public class Casillero {
     }
 
     
-    
     public int getNroPosEnXPasillo() {
         return nroPosEnXPasillo;
     }
@@ -56,8 +57,6 @@ public class Casillero {
         this.nroPosEnXPasillo = nroPasillo;
     }
     
-    
-
     public boolean isItemSolicitado() {
         return itemSolicitado;
     }
@@ -66,13 +65,14 @@ public class Casillero {
         this.itemSolicitado = itemSolicitado;
     }
 
-    public boolean isIsRight() {
-        return isRight;
+    public int getTamañoCasillero() {
+        return tamañoCasillero;
     }
 
-    public void setIsRight(boolean isRight) {
-        this.isRight = isRight;
+    public Item getItem() {
+        return item;
     }
+    
     
     
     
