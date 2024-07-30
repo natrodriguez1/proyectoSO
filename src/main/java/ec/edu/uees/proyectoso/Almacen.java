@@ -13,7 +13,8 @@ public class Almacen extends JPanel{
     
     //el tamaño del almacen es de 20x10, de acuerdo a nustras consideraciones, en el x las coordenadas van del 0 al 19, y en el eje y del 0 al 9
     private int[] indiceCasilleros = {0,3,4,7,8,11,12,15,16,19}; //coordenada en x donde se va a graficar cada grupo de casillero
-    private int squareSize = 50; // Tamaño de cada cuadrado en píxeles  
+    private int squareSize = 50; // Tamaño de cada cuadrado en píxeles
+    Graphics g;
     
     public Almacen() {
         int contNroItem = 0;//este contador se usa para asignar el número de item 
@@ -34,7 +35,7 @@ public class Almacen extends JPanel{
                 //Se crea el casillero, y se ingresa la coordenada en x por el tamaño del cuadrado, y la coordenada en y por el tamaño del cuadrado
                 //Como el contador del numero de item comienza en 0, para asignarlo al casillero se le suma 1, 
                 Casillero casillero = new Casillero(indiceCasillero * squareSize,i * squareSize,contNroItem+1);
-        
+
                 //De acuerdo al análisis de las coordenadas se obtuvo que en total hay 5 pasillos verticales, los cuales están ubicados en x en las coordenadas: 2,6,10,14,18
                 //Y en ese mismo análisis obtuvimos que cuando el indice del casillero es par, la coordenada en x del pasillo correspondiente al casillero es el indice + 2
                 //y que cuando el indice del casillero es impar, la coordenada en x del pasillo correspondiente es el indice - 1
@@ -54,23 +55,23 @@ public class Almacen extends JPanel{
             }
             
             if(contIndiceCasillero%2 == 0){
-                Pasillo pasillo = new Pasillo(listaCasilleros[0].getNroPosEnXPasillo(),contPasillo+1, listaCasilleros);//creamos el pasillo
+                Pasillo pasillo = new Pasillo(listaCasilleros[0].getNroPosEnXPasillo(),contPasillo+1, listaCasilleros, (((contPasillo+1)*12) - 11), ((contPasillo+1)*12), this);//creamos el pasillo
                 listaPasillos[contPasillo] = pasillo;//añadimos el pasillo a la lista de pasillos
                 contPasillo += 1;//sumamos 1 al contador de pasillos
             }
             contIndiceCasillero += 1;
-            
-            
         }
         
         //Imprimimos el pasillo y sus casilleros, para verificar que está todo bien
-        for(Pasillo pasillo : listaPasillos){
-            System.out.println("Numero pasillo: "+pasillo.getNroPasillo());
-            for (int i = 0; i < 12; i++) {
-                System.out.println("Numero Item: "+pasillo.getCasilleros()[i].getNroItem());
-            }
-            
-        }
+//        for(Pasillo pasillo : listaPasillos){
+//            System.out.println("Numero pasillo: "+pasillo.getNroPasillo());
+//            System.out.println("min: "+pasillo.getMin());
+//            System.out.println("max: "+pasillo.getMax());
+//            for (int i = 0; i < 12; i++) {
+//                System.out.println("Numero Item: "+pasillo.getCasilleros()[i].getNroItem());
+//            }
+
+//        }
     }
     
     @Override
@@ -83,16 +84,18 @@ public class Almacen extends JPanel{
         for (int indiceCasillero : indiceCasilleros) {
             for (int i = 7; i >= 2; i--) {
                 g.drawRect(indiceCasillero * squareSize, i * squareSize, squareSize, squareSize);//se dibuja el casillero
-                g.fillOval(indiceCasillero * squareSize + offset, i * squareSize + offset, ovalSize, ovalSize);//se dibuja un círculo en una aproximación al centro del casillero
+                //g.fillOval(indiceCasillero * squareSize + offset, i * squareSize + offset, ovalSize, ovalSize);//se dibuja un círculo en una aproximación al centro del casillero
             }
         }
-        
-        
+
+        g.drawRect(60, 450, 80, squareSize);
+        g.fillRect(60,450,80,squareSize); //depot
+
+
     }
 
     public Pasillo[] getListaPasillos() {
         return listaPasillos;
     }
-    
     
 }

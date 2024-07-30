@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 public class UI extends JFrame {
     
-    private Pedido[] listaPedidos = new Pedido[100];
+    private Pedido[] listaPedidos ;
     Almacen almacen = new Almacen();
 
     UI(){
@@ -62,12 +62,16 @@ public class UI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String input = inputPedidos.getText();
 
+
                 if(input.equals("") || Integer.parseInt(input)<= 0){
                     JOptionPane.showMessageDialog(null, "solicitar por lo menos 1 pedido");
                     inputPedidos.setText("");
                 }else{
-                    for(int i = 0; i < Integer.parseInt(input); i++){
-                        Pedido p = new Pedido();
+                    int numPedidos = Integer.parseInt(input);
+                    listaPedidos = new Pedido[numPedidos];
+                    for(int i = 0; i < numPedidos; i++){
+                        Pedido p = new Pedido(almacen);
+                        p.buscarPedido();
                         listaPedidos[i] = p;
                     }
                 }
@@ -113,6 +117,5 @@ public class UI extends JFrame {
     public Pedido[] getListaPedidos() {
         return listaPedidos;
     }
-    
-    
+
 }

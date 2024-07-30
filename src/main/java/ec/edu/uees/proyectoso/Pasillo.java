@@ -13,12 +13,18 @@ public class Pasillo {
     private int posicionInicialEnY = 9;
     private int posicionFinalEnY = 1;
     private int nroPasillo;
+    private int max;
+    private int min;
     private Casillero[] casilleros = new Casillero[6];
+    private Almacen almacen;
     
-    public Pasillo(int posicionEnX, int nroPasillo,Casillero[] casilleros){
+    public Pasillo(int posicionEnX, int nroPasillo,Casillero[] casilleros, int min, int max, Almacen a){
         this.posicionEnX = posicionEnX;
         this.nroPasillo = nroPasillo;
         this.casilleros = casilleros;
+        this.min = min;
+        this.max = max;
+        this.almacen = a;
     }
 
     public int getPosicionEnX() {
@@ -52,8 +58,6 @@ public class Pasillo {
     public void setNroPasillo(int nroPasillo) {
         this.nroPasillo = nroPasillo;
     }
-    
-    
 
     public Casillero[] getCasilleros() {
         return casilleros;
@@ -62,9 +66,24 @@ public class Pasillo {
     public void setCasilleros(Casillero[] casilleros) {
         this.casilleros = casilleros;
     }
-    
-    
-    
-            
-    
+
+    public int getMax() {
+        return max;
+    }
+
+    public void setMax(int max) {
+        this.max = max;
+    }
+
+    public int getMin() {
+        return min;
+    }
+
+    public void setMin(int min) {
+        this.min = min;
+    }
+    public void recorrer(){
+        almacen.pintarPasillo(getPosicionEnX(), getPosicionInicialEnY(), getPosicionEnX(), getPosicionFinalEnY());
+        System.out.println("pasillo #"+this.nroPasillo+" recorrido");
+    }
 }
