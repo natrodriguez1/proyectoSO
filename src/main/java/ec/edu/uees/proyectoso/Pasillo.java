@@ -83,7 +83,6 @@ public class Pasillo {
         this.min = min;
     }
     public void recorrer(){
-        almacen.pintarPasillo(getPosicionEnX(), getPosicionInicialEnY(), getPosicionEnX(), getPosicionFinalEnY());
         System.out.println("pasillo #"+this.nroPasillo+" recorrido");
     }
 }
