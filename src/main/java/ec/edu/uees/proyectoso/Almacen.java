@@ -3,6 +3,8 @@ package ec.edu.uees.proyectoso;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Almacen extends JPanel{
     
@@ -14,6 +16,8 @@ public class Almacen extends JPanel{
     private int[] indiceCasilleros = {0,3,4,7,8,11,12,15,16,19}; //coordenada en x donde se va a graficar cada grupo de casillero
     
     private ArrayList<Casillero> casillerosConCirculo = new ArrayList<>();
+    
+    private ArrayList<Pasillo> pasillosRecorrer = new ArrayList<>();
     
     
     public Almacen() {
@@ -58,8 +62,8 @@ public class Almacen extends JPanel{
             if(contIndiceCasillero%2 != 0 ){
                 Pasillo pasillo = new Pasillo(listaCasilleros[0].getNroPosEnXPasillo(),contPasillo+1, listaCasilleros);//creamos el pasillo
                 listaPasillos[contPasillo] = pasillo;//añadimos el pasillo a la lista de pasillos
-                pasillo.setNroItemIncio(pasillo.getCasilleros()[0].getNroItem()); 
-                pasillo.setNroItemFinal(pasillo.getCasilleros()[11].getNroItem()); 
+                pasillo.setMin(pasillo.getCasilleros()[0].getNroItem()); 
+                pasillo.setMax(pasillo.getCasilleros()[11].getNroItem()); 
                 contPasillo += 1;//sumamos 1 al contador de pasillos
                 
             }
@@ -76,6 +80,7 @@ public class Almacen extends JPanel{
     @Override
     public void paint(Graphics g) {
         super.paint(g);
+        
         //int ovalSize = 20; 
         //int offset = 15;
         
@@ -89,9 +94,15 @@ public class Almacen extends JPanel{
         
         //Se recorre la lista de pasillo, y luego la lista de casilleros de cada pasillo, para dibujar cada uno de los casilleros 
         for(Pasillo pasillo : listaPasillos){
+            //dibujarPasillo(g,pasillo);
+            /*
+            //Pasillo vertical
             g.drawLine(pasillo.getPosicionEnX()*50, pasillo.getPosicionInicialEnY()*50, pasillo.getPosicionEnX()*50, pasillo.getPosicionFinalEnY()*50);
+            //Pasillo horizontal superior
             g.drawLine(pasillo.getPosicionEnX()*50, pasillo.getPosicionFinalEnY()*50, pasillo.getPosicionEnX()+4*50, pasillo.getPosicionFinalEnY()*50);
+            //Pasillo horizontal inferior
             g.drawLine(pasillo.getPosicionEnX()*50, pasillo.getPosicionInicialEnY()*50, pasillo.getPosicionEnX()+4*50, pasillo.getPosicionInicialEnY()*50);
+            */
             for(Casillero casillero : pasillo.getCasilleros()){
                 g.drawRect(casillero.getX(), casillero.getY(), casillero.getTamañoCasillero(), casillero.getTamañoCasillero());//se dibuja el casillero
                 
@@ -99,12 +110,32 @@ public class Almacen extends JPanel{
         }
         
         //depot
-        g.drawRect(60, 450, 80, 50);
-       
+        g.fillRect(60, 450, 80, 50);
+        
+        //dibujar circulos en casilleros
         for (Casillero casillero : casillerosConCirculo) {
             dibujarCirculo(g, casillero);
         }
         
+        //Dibujar pasillos
+        int cont = 0;
+        for(Pasillo pasillo : pasillosRecorrer){
+
+            if(pasillo.getNroPasillo() != 1){
+                if(cont == 0){
+                    g.drawLine(listaPasillos[0].getPosicionEnX()*50, pasillo.getPosicionInicialEnY()*50, pasillo.getPosicionEnX()*50, pasillo.getPosicionInicialEnY()*50);
+                }else if(cont%2 == 0){
+                    g.drawLine(pasillosRecorrer.get(cont-1).getPosicionEnX()*50, pasillo.getPosicionInicialEnY()*50, pasillo.getPosicionEnX()*50, pasillo.getPosicionInicialEnY()*50);
+                }else if(cont%2 != 0){
+                    g.drawLine(pasillosRecorrer.get(cont-1).getPosicionEnX()*50, pasillo.getPosicionFinalEnY()*50, pasillo.getPosicionEnX()*50, pasillo.getPosicionFinalEnY()*50);
+                }
+            }
+
+            dibujarPasillo(g, pasillo);
+
+
+            cont++;
+        }
     }
 
     public Pasillo[] getListaPasillos() {
@@ -122,14 +153,33 @@ public class Almacen extends JPanel{
         g.fillOval(casillero.getX() + offset, casillero.getY() + offset, ovalSize, ovalSize);
     }
     
+    public void agregarPasillo(Pasillo pasillo, int index){
+        pasillosRecorrer.add(index,pasillo);
+        repaint();
+    }
+    
+    private void dibujarPasillo(Graphics g, Pasillo pasillo){
+        
+        g.drawLine(pasillo.getPosicionEnX()*50, pasillo.getPosicionInicialEnY()*50, pasillo.getPosicionEnX()*50, pasillo.getPosicionFinalEnY()*50);
+    }
+    
     public void borrarCirculos() {
         casillerosConCirculo.clear();
         repaint();
     }
     
-    public void borrarCirculos(Casillero casillero) {
+    public void borrarPasillos() {
+        pasillosRecorrer.clear();
+        repaint();
+    }
+    
+    /*public void borrarCirculos(Casillero casillero) {
         casillerosConCirculo.remove(casillero);
         repaint();
+    }*/
+
+    public ArrayList<Pasillo> getPasillosRecorrer() {
+        return pasillosRecorrer;
     }
 
     

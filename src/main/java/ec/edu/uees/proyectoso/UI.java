@@ -5,6 +5,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.BorderUIResource;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,6 +14,7 @@ public class UI extends JFrame {
     private Pedido[] listaPedidos;
     private Almacen almacen = new Almacen();
     private Pedido pedido;
+
 
     UI(){
         almacen.setPreferredSize(new Dimension(1000, 500));
@@ -104,15 +106,35 @@ public class UI extends JFrame {
                                 }
                                 
                                 lblPedido.setText(" Pedido "+pedido.getNumPedido());
-                                pintarCasilleros(pedido, almacen);
+                                
+                                Thread hiloCasilleros = new Thread(new Runnable(){
+                                    public void run(){
+                                        pintarCasilleros(pedido, almacen);
+                                    }
+                                });
+                                
+                                
+                                Thread hiloPasillos = new Thread(new Runnable(){
+                                    public void run(){
+                                        pintarPasillos(pedido, almacen);
+                                    }
+                                });
+                                
                                 
                                 try {
+                                    hiloCasilleros.start();
+                                    hiloCasilleros.join();
+                                    
+                                    hiloPasillos.start();
+                                    hiloPasillos.join();
                                     Thread.sleep(2000);
                                 } catch (InterruptedException ex) {
                                     Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                                 
+                                
                                 almacen.borrarCirculos();
+                                almacen.borrarPasillos();
                                 lblPedido.setText("__________");
                                 
                                 try {
@@ -132,8 +154,17 @@ public class UI extends JFrame {
                 
                 
                 
+                
             }
         });
+        
+        parar.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+            }
+            
+        }); 
         
         northPanel.add(label, BorderLayout.WEST);
         northPanel.add(inputPedidos, BorderLayout.CENTER);
@@ -160,13 +191,15 @@ public class UI extends JFrame {
     
     
     private void pintarCasilleros(Pedido pedido, Almacen almacen) {
+        
         for (int i = 0; i < pedido.getItems().length; i++) { 
             for (int j = 0; j < almacen.getListaPasillos().length; j++) {
-                if (almacen.getListaPasillos()[j].getNroItemFinal() >= pedido.getItems()[i].getNombreItem()&& pedido.getItems()[i].getNombreItem() >= almacen.getListaPasillos()[j].getNroItemIncio()) { 
+                if (almacen.getListaPasillos()[j].getMax() >= pedido.getItems()[i].getNum()&& pedido.getItems()[i].getNum() >= almacen.getListaPasillos()[j].getMin()) { 
+                    
                     for (int k = 0; k < almacen.getListaPasillos()[j].getCasilleros().length; k++) { 
-                        if (pedido.getItems()[i].getNombreItem() == almacen.getListaPasillos()[j].getCasilleros()[k].getNroItem()) { 
+                        if (pedido.getItems()[i].getNum() == almacen.getListaPasillos()[j].getCasilleros()[k].getNroItem()) { 
                             almacen.agregarCirculo(almacen.getListaPasillos()[j].getCasilleros()[k]);
-
+                              
                         }
                     }
                 }
@@ -175,6 +208,56 @@ public class UI extends JFrame {
         
     }
     
-    
+    private void pintarPasillos(Pedido pedido, Almacen almacen){
+        
+        Thread hilo = new Thread(new Runnable(){
+            public void run(){
+                int c = 0;
+                Arrays.sort(pedido.getItems());
+                for (int i = 0; i < pedido.getItems().length; i++) { 
+                    for (int j = 0; j < almacen.getListaPasillos().length; j++) {
+                        if (almacen.getListaPasillos()[j].getMax() >= pedido.getItems()[i].getNum()&& pedido.getItems()[i].getNum() >= almacen.getListaPasillos()[j].getMin()) { 
+                            if(c == 0){
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException ex) {
+                                    Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                almacen.agregarPasillo(almacen.getListaPasillos()[j], 0);
+                                c++;
+                            } else if(almacen.getPasillosRecorrer().get(c-1).getNroPasillo() != almacen.getListaPasillos()[j].getNroPasillo()){
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException ex) {
+                                    Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                almacen.agregarPasillo(almacen.getListaPasillos()[j], c);
+                                c++;
+                            }
+                            /*
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException ex) {
+                                Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                            }*/
+                        }
+                    }
+                }
+
+                for(Pasillo pasillo : almacen.getPasillosRecorrer()){
+                    System.out.println("Recorrer pasillo: " + pasillo.getNroPasillo());
+                }
+            }
+        });
+        
+        hilo.start();
+        
+        try {
+            hilo.join();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
     
 }

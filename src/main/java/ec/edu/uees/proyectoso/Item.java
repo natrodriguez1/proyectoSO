@@ -8,15 +8,20 @@ package ec.edu.uees.proyectoso;
  *
  * @author Asus
  */
-public class Item {
-    private int nombreItem;
+public class Item implements Comparable<Item>{
+    private int num;
     
     public Item(int nombreItem){
-        this.nombreItem = nombreItem;
+        this.num = nombreItem;
     }
 
-    public int getNombreItem() {
-        return nombreItem;
+    public int getNum() {
+        return num;
+    }
+
+    @Override
+    public int compareTo(Item o) {
+        return Integer.compare(getNum(), o.getNum());
     }
     
 }
