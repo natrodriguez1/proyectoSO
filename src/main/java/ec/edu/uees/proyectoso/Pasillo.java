@@ -9,42 +9,42 @@ package ec.edu.uees.proyectoso;
  * @author Asus
  */
 public class Pasillo {
-    private int posicionEnX;
-    private int posicionInicialEnY = 9;
-    private int posicionFinalEnY = 1;
+    private int x;
+    private int y1 = 9;
+    private int y2 = 1;
     private int nroPasillo;
     private int min;
     private int max;
     private Casillero[] casilleros = new Casillero[12];
     
     public Pasillo(int posicionEnX, int nroPasillo, Casillero[] casilleros){
-        this.posicionEnX = posicionEnX;
+        this.x = posicionEnX;
         this.nroPasillo = nroPasillo;
         this.casilleros = casilleros;
     }
 
-    public int getPosicionEnX() {
-        return posicionEnX;
+    public int getX() {
+        return x;
     }
 
-    public void setPosicionEnX(int posicionEnX) {
-        this.posicionEnX = posicionEnX;
+    public void setX(int x) {
+        this.x = x;
     }
 
-    public int getPosicionInicialEnY() {
-        return posicionInicialEnY;
+    public int getY1() {
+        return y1;
     }
 
-    public void setPosicionInicialEnY(int posicionInicialEnY) {
-        this.posicionInicialEnY = posicionInicialEnY;
+    public void setY1(int y1) {
+        this.y1 = y1;
     }
 
-    public int getPosicionFinalEnY() {
-        return posicionFinalEnY;
+    public int getY2() {
+        return y2;
     }
 
-    public void setPosicionFinalEnY(int posicionFinalEnY) {
-        this.posicionFinalEnY = posicionFinalEnY;
+    public void setY2(int y2) {
+        this.y2 = y2;
     }
 
     public int getNroPasillo() {

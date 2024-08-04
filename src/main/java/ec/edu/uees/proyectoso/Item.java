@@ -11,8 +11,8 @@ package ec.edu.uees.proyectoso;
 public class Item implements Comparable<Item>{
     private int num;
     
-    public Item(int nombreItem){
-        this.num = nombreItem;
+    public Item(int num){
+        this.num = num;
     }
 
     public int getNum() {

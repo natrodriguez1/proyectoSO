@@ -31,7 +31,7 @@ public class UI extends JFrame {
         //norte
         JPanel northPanel = new JPanel();
         northPanel.setBorder(new EmptyBorder(20,20,20,20));
-        JLabel label = new JLabel("número de pedidos:");
+        JLabel label = new JLabel("Número de Pedidos:");
         label.setHorizontalAlignment(SwingConstants.LEFT);
         JTextField inputPedidos = new JTextField(10);
         inputPedidos.addKeyListener(new KeyListener() {
@@ -62,11 +62,11 @@ public class UI extends JFrame {
         JPanel southPanel = new JPanel();
         southPanel.setBorder(new EmptyBorder(20,20,20,20));
 
-        JLabel pedidoLbl = new JLabel("pedido:");
-        JLabel lblPedido = new JLabel("__________");
+        JLabel pedidoLbl = new JLabel("Pedido:");
+        JLabel lblPedido = new JLabel("_________");
 
-        JLabel distanciaLbl = new JLabel("distancia total: ");
-        JLabel distancia = new JLabel("__________");
+        JLabel distanciaLbl = new JLabel("Distancia Total: ");
+        JLabel distancia = new JLabel("_________");
 
         southPanel.add(pedidoLbl);
         southPanel.add(lblPedido);
@@ -74,17 +74,14 @@ public class UI extends JFrame {
         southPanel.add(distancia);
         add(southPanel, BorderLayout.SOUTH);
         
-        JButton ejecutar = new JButton("ejecutar");
-        JButton parar = new JButton("parar");
-        JButton finalizar = new JButton("finalizar");
+        JButton ejecutar = new JButton("Ejecutar");
+        JButton parar = new JButton("Parar");
+        JButton finalizar = new JButton("Finalizar");
         
         ejecutar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String input = inputPedidos.getText();
-                //int numPedidos = Integer.parseInt(input);
-                //listaPedidos = new Pedido[Integer.parseInt(input)];
-
                 
                 if(input.equals("") || Integer.parseInt(input) <= 0){
                     JOptionPane.showMessageDialog(null, "solicitar por lo menos 1 pedido");
@@ -105,7 +102,7 @@ public class UI extends JFrame {
                                     Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                                 
-                                lblPedido.setText(" Pedido "+pedido.getNumPedido());
+                                lblPedido.setText("<html><u>Pedido " + pedido.getNumPedido() + "</u></html>");
                                 
                                 Thread hiloCasilleros = new Thread(new Runnable(){
                                     public void run(){
@@ -193,12 +190,12 @@ public class UI extends JFrame {
     private void pintarCasilleros(Pedido pedido, Almacen almacen) {
         
         for (int i = 0; i < pedido.getItems().length; i++) { 
-            for (int j = 0; j < almacen.getListaPasillos().length; j++) {
-                if (almacen.getListaPasillos()[j].getMax() >= pedido.getItems()[i].getNum()&& pedido.getItems()[i].getNum() >= almacen.getListaPasillos()[j].getMin()) { 
+            for (int j = 0; j < almacen.getPasillos().length; j++) {
+                if (almacen.getPasillos()[j].getMax() >= pedido.getItems()[i].getNum()&& pedido.getItems()[i].getNum() >= almacen.getPasillos()[j].getMin()) { 
                     
-                    for (int k = 0; k < almacen.getListaPasillos()[j].getCasilleros().length; k++) { 
-                        if (pedido.getItems()[i].getNum() == almacen.getListaPasillos()[j].getCasilleros()[k].getNroItem()) { 
-                            almacen.agregarCirculo(almacen.getListaPasillos()[j].getCasilleros()[k]);
+                    for (int k = 0; k < almacen.getPasillos()[j].getCasilleros().length; k++) { 
+                        if (pedido.getItems()[i].getNum() == almacen.getPasillos()[j].getCasilleros()[k].getNroItem()) { 
+                            almacen.agregarCirculo(almacen.getPasillos()[j].getCasilleros()[k]);
                               
                         }
                     }
@@ -215,38 +212,77 @@ public class UI extends JFrame {
                 int c = 0;
                 Arrays.sort(pedido.getItems());
                 for (int i = 0; i < pedido.getItems().length; i++) { 
-                    for (int j = 0; j < almacen.getListaPasillos().length; j++) {
-                        if (almacen.getListaPasillos()[j].getMax() >= pedido.getItems()[i].getNum()&& pedido.getItems()[i].getNum() >= almacen.getListaPasillos()[j].getMin()) { 
+                    for (int j = 0; j < almacen.getPasillos().length; j++) {
+                        if (almacen.getPasillos()[j].getMax() >= pedido.getItems()[i].getNum()&& pedido.getItems()[i].getNum() >= almacen.getPasillos()[j].getMin()) { 
                             if(c == 0){
+                                
                                 try {
                                     Thread.sleep(1000);
                                 } catch (InterruptedException ex) {
                                     Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
                                 }
-                                almacen.agregarPasillo(almacen.getListaPasillos()[j], 0);
+                                
+                                almacen.agregarPasillo(almacen.getPasillos()[j], 0);
                                 c++;
-                            } else if(almacen.getPasillosRecorrer().get(c-1).getNroPasillo() != almacen.getListaPasillos()[j].getNroPasillo()){
+                            } else if(almacen.getPasillosRecorrer().get(c-1).getNroPasillo() != almacen.getPasillos()[j].getNroPasillo()){
+                                
                                 try {
                                     Thread.sleep(1000);
                                 } catch (InterruptedException ex) {
                                     Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
                                 }
-                                almacen.agregarPasillo(almacen.getListaPasillos()[j], c);
+                                
+                                almacen.agregarPasillo(almacen.getPasillos()[j], c);
+                                
                                 c++;
                             }
-                            /*
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
-                            }*/
+                            
+                            //Se busca entrar en ultimo item para poder trazar la linea final hasta las coordenadas de este item
+                            if(i == pedido.getItems().length-1){
+                                int yMayor = 50000;
+                                
+                                for (int k = 0; k < almacen.getPasillosRecorrer().get(c-1).getCasilleros().length; k++){
+                                    Casillero casillero = almacen.getPasillosRecorrer().get(c - 1).getCasilleros()[k];
+                                    for (int l = 0; l < pedido.getItems().length; l++) {
+                                        
+                                        if (pedido.getItems()[l].getNum() == casillero.getNroItem()) {
+                                            if (casillero.getY() < yMayor) {
+                                                yMayor = casillero.getY();
+                                            }
+                                        }
+                                        
+                                    }
+                                    
+                                    if(pedido.getItems()[i].getNum() == casillero.getNroItem()){ 
+                                        
+                                        if (casillero.getY() <= yMayor) {
+                                            almacen.getPasillosRecorrer().get(c-1).setY2(casillero.getY()/50);
+                                        }else{
+                                            almacen.getPasillosRecorrer().get(c-1).setY2(yMayor/50);
+                                        }
+                                        
+                                    }
+                                }
+                                
+                            }
+                            
                         }
+                        
                     }
                 }
-
-                for(Pasillo pasillo : almacen.getPasillosRecorrer()){
-                    System.out.println("Recorrer pasillo: " + pasillo.getNroPasillo());
+                
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
                 }
+
+                //dibujo del camino final hacia el depot
+                Pasillo pasillo = new Pasillo(almacen.getPasillosRecorrer().get(almacen.getPasillosRecorrer().size()-1).getX(),6, almacen.getPasillosRecorrer().get(almacen.getPasillosRecorrer().size()-1).getCasilleros());
+                pasillo.setY1(9);
+                pasillo.setY2(9);
+                almacen.agregarPasillo(pasillo, almacen.getPasillosRecorrer().size());
+
             }
         });
         
