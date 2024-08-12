@@ -9,46 +9,42 @@ package ec.edu.uees.proyectoso;
  * @author Asus
  */
 public class Pasillo {
-    private int posicionEnX;
-    private int posicionInicialEnY = 9;
-    private int posicionFinalEnY = 1;
+    private int x;
+    private int y1 = 9;
+    private int y2 = 1;
     private int nroPasillo;
-    private int max;
     private int min;
-    private Casillero[] casilleros = new Casillero[6];
-    private Almacen almacen;
+    private int max;
+    private Casillero[] casilleros = new Casillero[12];
     
-    public Pasillo(int posicionEnX, int nroPasillo,Casillero[] casilleros, int min, int max, Almacen a){
-        this.posicionEnX = posicionEnX;
+    public Pasillo(int posicionEnX, int nroPasillo, Casillero[] casilleros){
+        this.x = posicionEnX;
         this.nroPasillo = nroPasillo;
         this.casilleros = casilleros;
-        this.min = min;
-        this.max = max;
-        this.almacen = a;
     }
 
-    public int getPosicionEnX() {
-        return posicionEnX;
+    public int getX() {
+        return x;
     }
 
-    public void setPosicionEnX(int posicionEnX) {
-        this.posicionEnX = posicionEnX;
+    public void setX(int x) {
+        this.x = x;
     }
 
-    public int getPosicionInicialEnY() {
-        return posicionInicialEnY;
+    public int getY1() {
+        return y1;
     }
 
-    public void setPosicionInicialEnY(int posicionInicialEnY) {
-        this.posicionInicialEnY = posicionInicialEnY;
+    public void setY1(int y1) {
+        this.y1 = y1;
     }
 
-    public int getPosicionFinalEnY() {
-        return posicionFinalEnY;
+    public int getY2() {
+        return y2;
     }
 
-    public void setPosicionFinalEnY(int posicionFinalEnY) {
-        this.posicionFinalEnY = posicionFinalEnY;
+    public void setY2(int y2) {
+        this.y2 = y2;
     }
 
     public int getNroPasillo() {
@@ -58,6 +54,8 @@ public class Pasillo {
     public void setNroPasillo(int nroPasillo) {
         this.nroPasillo = nroPasillo;
     }
+    
+    
 
     public Casillero[] getCasilleros() {
         return casilleros;
@@ -67,22 +65,22 @@ public class Pasillo {
         this.casilleros = casilleros;
     }
 
-    public int getMax() {
-        return max;
-    }
-
-    public void setMax(int max) {
-        this.max = max;
-    }
-
     public int getMin() {
         return min;
     }
-
-    public void setMin(int min) {
-        this.min = min;
+    
+    public void setMin(int nroItemInicio) {
+        this.min = nroItemInicio;
     }
-    public void recorrer(){
-        System.out.println("pasillo #"+this.nroPasillo+" recorrido");
+    
+    public int getMax() {
+        return max;
     }
+    
+    public void setMax(int max) {
+        this.max = max;
+    }
+    
+            
+    
 }

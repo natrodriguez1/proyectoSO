@@ -13,8 +13,7 @@ import javax.swing.JFrame;
 public class ProyectoSO {
 
     public static void main(String[] args) {
-        //Almacen almacen = new Almacen();
-        
+
         JFrame ventana = new UI();
         ventana.setVisible(true);
     }

@@ -1,53 +1,44 @@
 package ec.edu.uees.proyectoso;
 
-import java.util.*;
+import java.util.Random;
 
 public class Pedido {
     
-    private int numItems;
+    private int numPedido;
+    private int numItems ;
     private int numTotalItems = 60; //se puede ajustar numero de items
     private Random rnd = new Random();
     private Item[] items;
-    private Almacen almacen;
-    private Pasillo[] listaPasillos;
-    private Pasillo[] pasillosRecorrer = new Pasillo[12];
     
-    public Pedido(Almacen almacen){
-        this.almacen = almacen;
-        this.listaPasillos = almacen.getListaPasillos();
+    
+    public Pedido(int numPedido){
+        this.numPedido = numPedido;
+    }
+    
+    public void run(){
+        System.out.println("Pedido: " + numPedido);
+        generarPedido();
+    }
+    
+    public void generarPedido(){
         numItems = rnd.nextInt(5,10);
         items = new Item[numItems];
         int nombreItem;
         for(int i = 0; i<numItems; i++){
             nombreItem = rnd.nextInt(1,numTotalItems);
-            items[i] = new Item(nombreItem);
+            Item item = new Item(nombreItem);
+            items[i] = item;
+            System.out.println("item #"+nombreItem);
         }
-        System.out.println(Arrays.toString(items));
+        
     }
 
     public Item[] getItems() {
         return items;
     }
 
-    public void buscarPedido(){
-        int c = 0;
-        Arrays.sort(items);
-        for(Item item: items){
-            for(Pasillo pasillo: this.listaPasillos){
-                if(item.getNum() >= pasillo.getMin() && item.getNum() <= pasillo.getMax()){
-                    if(c == 0){
-                        pasillosRecorrer[0] = pasillo;
-                        c++;
-                    } else if(pasillosRecorrer[c-1].getNroPasillo() != pasillo.getNroPasillo()){
-                        pasillosRecorrer[c] = pasillo;
-                        c++;
-                    }
-                }
-            }
-        }
-        for(int i = 0; i<c; i++){
-            pasillosRecorrer[i].recorrer();
 
-        }
+    public int getNumPedido() {
+        return numPedido;
     }
 }
