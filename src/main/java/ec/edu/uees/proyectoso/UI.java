@@ -19,6 +19,8 @@ public class UI extends JFrame {
     private Pedido[] listaPedidos;
     private Almacen almacen = new Almacen();
     private Pedido pedido;
+    private Mutex m;
+    private boolean pausado;
 
 
     UI(){
@@ -101,10 +103,11 @@ public class UI extends JFrame {
         ejecutar.addActionListener(new ActionListener() {
             @Override
             public synchronized void actionPerformed(ActionEvent e) {
-                
                 String input = inputPedidos.getText();
-                
-                if(input.equals("") || Integer.parseInt(input) <= 0){
+                if(pausado){
+                    pausado = false;
+                    resumir();
+                } else if(input.equals("") || Integer.parseInt(input) <= 0){
                     JOptionPane.showMessageDialog(null, "solicitar por lo menos 1 pedido");
                     inputPedidos.setText("");
                 }else{
@@ -116,6 +119,7 @@ public class UI extends JFrame {
                             for(int i = 0; i < numPedidos; i++){
                                 pedido = new Pedido(i+1);
                                 pedido.start();
+                                m = new Mutex(pedido);
                                 listaPedidos[i] = pedido;
                                 
                                 try {
@@ -206,27 +210,29 @@ public class UI extends JFrame {
                             }
                         }
                     });
-                    
                     hilo.start();
-                    
-                    
-                    
-                    
                 }
-                
-                
-                
-                
             }
         });
         
         parar.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                
+                try {
+                    m.bloquear();
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
             
-        }); 
+        });
+
+        finalizar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
         
         northPanel.add(label, BorderLayout.WEST);
         northPanel.add(inputPedidos, BorderLayout.CENTER);
@@ -249,8 +255,9 @@ public class UI extends JFrame {
         
     }
 
-    
-    
+    private void resumir(){
+        m.desbloquear();
+    }
     
     private void pintarCasilleros(Pedido pedido, Almacen almacen) {
         
