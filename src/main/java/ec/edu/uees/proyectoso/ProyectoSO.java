@@ -7,7 +7,6 @@ package ec.edu.uees.proyectoso;
 import javax.swing.JFrame;
 
 /**
- *
  * @author Asus
  */
 public class ProyectoSO {
