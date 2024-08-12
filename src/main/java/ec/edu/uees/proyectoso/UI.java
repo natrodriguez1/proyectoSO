@@ -5,7 +5,12 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.BorderUIResource;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,6 +22,16 @@ public class UI extends JFrame {
 
 
     UI(){
+        String nombreArchivo = "Resultados.txt";
+        File archivo = new File(nombreArchivo);
+        
+         // Al iniciar el programa, limpiamos el archivo
+        try (FileWriter writer = new FileWriter(archivo, false)) {
+            writer.write(""); // Esto limpia el contenido del archivo
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
         almacen.setPreferredSize(new Dimension(1000, 500));
 
         setTitle("proyecto :)");
@@ -67,11 +82,16 @@ public class UI extends JFrame {
 
         JLabel distanciaLbl = new JLabel("Distancia Total: ");
         JLabel distancia = new JLabel("_________");
+        
+        JLabel tiempoLbl = new JLabel("Tiempo: ");
+        JLabel tiempo = new JLabel("_________");
 
         southPanel.add(pedidoLbl);
         southPanel.add(lblPedido);
         southPanel.add(distanciaLbl);
         southPanel.add(distancia);
+        southPanel.add(tiempoLbl);
+        southPanel.add(tiempo);
         add(southPanel, BorderLayout.SOUTH);
         
         JButton ejecutar = new JButton("Ejecutar");
@@ -80,7 +100,8 @@ public class UI extends JFrame {
         
         ejecutar.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public synchronized void actionPerformed(ActionEvent e) {
+                
                 String input = inputPedidos.getText();
                 
                 if(input.equals("") || Integer.parseInt(input) <= 0){
@@ -89,6 +110,7 @@ public class UI extends JFrame {
                 }else{
                     Thread hilo = new Thread(new Runnable(){
                         public void run(){
+                            
                             int numPedidos = Integer.parseInt(input);
                             listaPedidos = new Pedido[numPedidos];
                             for(int i = 0; i < numPedidos; i++){
@@ -101,6 +123,7 @@ public class UI extends JFrame {
                                 } catch (InterruptedException ex) {
                                     Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
                                 }
+                                
                                 
                                 lblPedido.setText("<html><u>Pedido " + pedido.getNumPedido() + "</u></html>");
                                 
@@ -118,13 +141,49 @@ public class UI extends JFrame {
                                 });
                                 
                                 
+                                
                                 try {
                                     hiloCasilleros.start();
                                     hiloCasilleros.join();
                                     
                                     hiloPasillos.start();
                                     hiloPasillos.join();
-                                    Thread.sleep(2000);
+                                    
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException ex) {
+                                    Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                
+                                Thread hiloDistancia = new Thread(new Runnable(){
+                                    public void run(){
+                                        almacen.calcularDistancia();
+                                        distancia.setText("<html><u>"+almacen.getDistanciaTotal()+" metros</u></html>");
+                                        tiempo.setText("<html><u>"+almacen.getDistanciaTotal()+" segundos</u></html>");
+                                    }
+                                });
+                                
+                                Thread hiloArchivo = new Thread(new Runnable(){
+                                    @Override
+                                    public void run() {
+                                        try (FileWriter writer = new FileWriter(archivo, true)) {
+                                            writer.write("pedido p"+ pedido.getNumPedido()+ "," + almacen.getDistanciaTotal()+ ","+ almacen.getDistanciaTotal() + "\n");
+                                            for (Item item : pedido.getItems()) {
+                                                writer.write("item "+ item.getNum() + "\n");
+                                            }
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    
+                                });
+                                
+                                hiloDistancia.start();
+                                hiloArchivo.start();
+                                
+                                try {
+                                    hiloDistancia.join();
+                                    hiloArchivo.join();
+                                    Thread.sleep(8000);
                                 } catch (InterruptedException ex) {
                                     Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
                                 }
@@ -133,18 +192,24 @@ public class UI extends JFrame {
                                 almacen.borrarCirculos();
                                 almacen.borrarPasillos();
                                 lblPedido.setText("__________");
+                                distancia.setText("__________");
+                                tiempo.setText("__________");
                                 
                                 try {
                                     Thread.sleep(2000);
                                 } catch (InterruptedException ex) {
                                     Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
                                 }
+                                
+                                
 
                             }
                         }
                     });
                     
                     hilo.start();
+                    
+                    
                     
                     
                 }
@@ -262,8 +327,15 @@ public class UI extends JFrame {
                                         }
                                         
                                     }
+                                    
                                 }
                                 
+                                //dibujar el regreso hacia el depot
+                                Pasillo pasillo = new Pasillo(almacen.getPasillosRecorrer().get(c-1).getX(),6,almacen.getPasillosRecorrer().get(c-1).getCasilleros());
+                                pasillo.setY2(almacen.getPasillosRecorrer().get(c-1).getY2());
+                                pasillo.setY1(almacen.getPasillosRecorrer().get(c-1).getY1());
+
+                                almacen.agregarPasillo(pasillo, almacen.getPasillosRecorrer().size());
                             }
                             
                         }
@@ -278,7 +350,7 @@ public class UI extends JFrame {
                 }
 
                 //dibujo del camino final hacia el depot
-                Pasillo pasillo = new Pasillo(almacen.getPasillosRecorrer().get(almacen.getPasillosRecorrer().size()-1).getX(),6, almacen.getPasillosRecorrer().get(almacen.getPasillosRecorrer().size()-1).getCasilleros());
+                Pasillo pasillo = new Pasillo(almacen.getPasillosRecorrer().get(almacen.getPasillosRecorrer().size()-1).getX(),7, almacen.getPasillosRecorrer().get(almacen.getPasillosRecorrer().size()-1).getCasilleros());
                 pasillo.setY1(9);
                 pasillo.setY2(9);
                 almacen.agregarPasillo(pasillo, almacen.getPasillosRecorrer().size());

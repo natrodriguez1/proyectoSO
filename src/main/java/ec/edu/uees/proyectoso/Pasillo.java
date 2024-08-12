@@ -17,8 +17,8 @@ public class Pasillo {
     private int max;
     private Casillero[] casilleros = new Casillero[12];
     
-    public Pasillo(int posicionEnX, int nroPasillo, Casillero[] casilleros){
-        this.x = posicionEnX;
+    public Pasillo(int x, int nroPasillo, Casillero[] casilleros){
+        this.x = x;
         this.nroPasillo = nroPasillo;
         this.casilleros = casilleros;
     }

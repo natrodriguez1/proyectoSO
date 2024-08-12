@@ -19,6 +19,8 @@ public class Almacen extends JPanel{
     
     private ArrayList<Pasillo> pasillosRecorrer = new ArrayList<>();
     
+    private int distanciaTotal;
+    
     
     public Almacen() {
         int nroItem = 0;//este contador se usa para asignar el número de item 
@@ -107,24 +109,34 @@ public class Almacen extends JPanel{
                 if(cont == 0){
                     //Se dibuja la linea horizontal que lleva del primer pasillo al siguiente pasillo
                     g.drawLine(pasillos[0].getX()*50, pasillo.getY1()*50, pasillo.getX()*50, pasillo.getY1()*50);
-                }else if(pasillo.getNroPasillo() == 6){
+                    //distanciaTotal += pasillo.getX() - pasillos[0].getX();
+                }else if(pasillo.getNroPasillo() == 6 && (cont-1)%2 == 0){
+                    g.drawLine(pasillo.getX()*50, pasillo.getY2()*50, (pasillo.getX()*50)+5, pasillo.getY2()*50);
+                    g.drawLine((pasillo.getX()*50)+5, pasillo.getY1()*50, (pasillo.getX()*50)+5, pasillo.getY2()*50);
+                }else if(pasillo.getNroPasillo() == 7){
+                    if((cont-2)%2 == 0){
+                        g.drawLine((pasillo.getX()*50)+5, pasillo.getY1()*50, 2*50, pasillo.getY1()*50);
+                    }
                     //Se dibuja la linea horizontal que lleva del ultimo pasillo al depot
-                    g.drawLine(pasillo.getX()*50, pasillo.getY1()*50, 2*50, pasillo.getY1()*50);
+                    g.drawLine((pasillo.getX()*50), pasillo.getY1()*50, 2*50, pasillo.getY1()*50);
                 }else if(cont%2 == 0){
                     //Se dibuja la linea horizontal que lleva del pasillo anterior al pasillo que se esta recorriendo acutalmente pero se dibuja solo cuando el pasillo comienza en la parte inferior
                     g.drawLine(pasillosRecorrer.get(cont-1).getX()*50, pasillo.getY1()*50, pasillo.getX()*50, pasillo.getY1()*50);
+                    //distanciaTotal += pasillo.getX() - pasillosRecorrer.get(cont-1).getX();
                 }else if(cont%2 != 0){
                     pasillo.setY2(1);
                     //Se dibuja la linea horizontal que lleva del pasillo anterior al pasillo que se esta recorriendo acutalmente pero se dibuja solo cuando el pasillo comienza en la parte superior
                     g.drawLine(pasillosRecorrer.get(cont-1).getX()*50, pasillo.getY2()*50, pasillo.getX()*50, pasillo.getY2()*50);
+                    //distanciaTotal += pasillo.getX() - pasillosRecorrer.get(cont-1).getX();
                 }
             }
             
-            if(pasillo.getNroPasillo() != 6){
+            if(pasillo.getNroPasillo() != 7 || pasillo.getNroPasillo() != 6){
                 dibujarPasillo(g, pasillo);
             }
-
+            
             cont++;
+            
         }
     }
 
@@ -162,9 +174,39 @@ public class Almacen extends JPanel{
         pasillosRecorrer.clear();
         repaint();
     }
+    
+    public void calcularDistancia(){
+        distanciaTotal = 0;
+        Pasillo primerPasillo = pasillosRecorrer.get(0);
+        
+        if(primerPasillo.getX() != 2){
+            distanciaTotal += primerPasillo.getX() - 2;
+        }
+        
+        for(Pasillo pasillo : pasillosRecorrer){
+            
+            if(pasillo.getNroPasillo() != 6 && pasillo.getNroPasillo() != 7){
+                distanciaTotal += pasillo.getY1() - pasillo.getY2();
+                if(!pasillo.equals(primerPasillo)){
+                    distanciaTotal += pasillo.getX() - pasillosRecorrer.get(pasillosRecorrer.indexOf(pasillo)-1).getX();
+                }
+            }else if(pasillo.getNroPasillo() == 6 && (pasillosRecorrer.size()-2) % 2 != 0){                
+                distanciaTotal += pasillo.getY1() - pasillo.getY2();
+            }else if(pasillo.getNroPasillo() == 7){
+                distanciaTotal += pasillo.getX() - 2;
+            }
+            
+        }
+        
+        
+    }
 
     public ArrayList<Pasillo> getPasillosRecorrer() {
         return pasillosRecorrer;
+    }
+
+    public int getDistanciaTotal() {
+        return distanciaTotal;
     }
 
     
